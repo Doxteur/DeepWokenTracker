@@ -1,0 +1,239 @@
+{
+    "version": 3,
+    "createdAt": "2025-11-23T12:16:41.282Z",
+    "updatedAt": "2026-06-25T13:09:56.655Z",
+    "author": {
+      "id": "skippergripper",
+      "verifiedId": "896731887987482634",
+      "name": "skippergripper"
+    },
+    "stats": {
+      "buildName": "Seraph Soul V3",
+      "traits": {
+        "Erudition": 0,
+        "Songchant": 0,
+        "Proficiency": 6,
+        "Vitality": 6
+      },
+      "traitsPoints": 0,
+      "buildDescription": "Thank you Amethyst for the bloodrend idea ",
+      "points": 0,
+      "pointSpent": 330,
+      "meta": {
+        "Origin": "Deepbound",
+        "Oath": "Blindseer",
+        "Outfit": "Ignition Deepdelver",
+        "Race": "None",
+        "Murmur": "Ardour",
+        "Bell": "Crazy Slots"
+      },
+      "buildAuthor": "",
+      "flaw1": "Simple",
+      "flaw2": "None",
+      "flaw3": "None",
+      "pointsUntilNextPower": 0,
+      "power": 20,
+      "boon1": "Steadfast",
+      "boon2": "Packmule"
+    },
+    "attributes": {
+      "weapon": {
+        "Light Wep.": 0,
+        "Heavy Wep.": 99,
+        "Medium Wep.": 0
+      },
+      "attunement": {
+        "Frostdraw": 0,
+        "Thundercall": 0,
+        "Shadowcast": 22,
+        "Flamecharm": 0,
+        "Galebreathe": 0,
+        "Bloodrend": 25,
+        "Ironsing": 0
+      },
+      "base": {
+        "Charisma": 25,
+        "Willpower": 75,
+        "Strength": 5,
+        "Fortitude": 75,
+        "Intelligence": 0,
+        "Agility": 5
+      }
+    },
+    "content": {
+      "mantraModifications": {
+        "Brace": {},
+        "Blood Wisp": {},
+        "Shade Devour": {},
+        "Reinforce": {},
+        "Sightless Beam": {},
+        "Exhaustion Strike": {},
+        "Taunt": {}
+      },
+      "notes": ""
+    },
+    "meta": {
+      "votes": {
+        "up": 1,
+        "down": 0,
+        "voters": {
+          "1336065390698041536": "up"
+        }
+      },
+      "views": 8515,
+      "tags": [
+        "PvE",
+        "PvE: Boss",
+        "Bloodrend",
+        "Shadowcast"
+      ],
+      "saved": 5,
+      "private": false,
+      "comments": {
+        "count": 0,
+        "lastActivity": null
+      },
+      "visibility": "public"
+    },
+    "talents": [
+      "Against All Odds",
+      "Emergency Reserves",
+      "Time To Go",
+      "Scaredy Cat",
+      "Carnivore",
+      "Grand Feast",
+      "Sunken Predator",
+      "Battle Tendency",
+      "Braced Collapse",
+      "Moving Fortress",
+      "Perseverance",
+      "Reinforced Armor",
+      "Rush Hour",
+      "Brazen Blow",
+      "Heavy Fatigue",
+      "Impairing Blow",
+      "Rending Impact",
+      "Defiance",
+      "Underdog",
+      "Charismatic Cast",
+      "Tough Love",
+      "Fishman",
+      "Exoskeleton",
+      "To The Finish",
+      "Neuroplasticity",
+      "Heretic's Sutra",
+      "Brick Wall",
+      "Mythic Stability",
+      "Not A Scratch",
+      "Last Resort",
+      "The Eleventh Hour",
+      "Old Habits Die Hard",
+      "Thresher Claws",
+      "Thresher Scales",
+      "Breathing Exercise",
+      "Conquer your Fears",
+      "Disbelief",
+      "Piercing Will",
+      "Full Reset",
+      "Ready or Not",
+      "Replenishing Knockout",
+      "Armor Conserver",
+      "Padded Armor",
+      "Steel Scales",
+      "Family Recipe",
+      "Pocket Bombs",
+      "Will o' Wisp [BLD]",
+      "Knight's Rally",
+      "Turtle Shell",
+      "Bloodiron Spirit",
+      "Grasp on Reality",
+      "Magical Resolve",
+      "Unfazed",
+      "Termite",
+      "Scuba Drowner",
+      "Brutal Momentum",
+      "Warrior's Swing"
+    ],
+    "weapons": "",
+    "enchant": "",
+    "motif": "",
+    "preShrine": {
+      "weapon": {
+        "Light Wep.": 0,
+        "Heavy Wep.": 1,
+        "Medium Wep.": 0
+      },
+      "attunement": {
+        "Frostdraw": 0,
+        "Shadowcast": 1,
+        "Galebreathe": 0,
+        "Thundercall": 0,
+        "Bloodrend": 50,
+        "Ironsing": 0,
+        "Flamecharm": 0
+      },
+      "base": {
+        "Charisma": 1,
+        "Willpower": 100,
+        "Fortitude": 100,
+        "Intelligence": 0,
+        "Agility": 0,
+        "Strength": 0
+      }
+    },
+    "favoritedTalents": [],
+    "mantras": [
+      "Shade Devour",
+      "Taunt",
+      "Reinforce",
+      "Brace",
+      "Blood Wisp",
+      "Exhaustion Strike",
+      "Sightless Beam"
+    ],
+    "postShrine": {
+      "weapon": {
+        "Light Wep.": 0,
+        "Heavy Wep.": 0,
+        "Medium Wep.": 0
+      },
+      "attunement": {
+        "Shadowcast": 0,
+        "Galebreathe": 0,
+        "Frostdraw": 0,
+        "Flamecharm": 0,
+        "Thundercall": 0,
+        "Ironsing": 0,
+        "Bloodrend": 0
+      },
+      "base": {
+        "Fortitude": 100,
+        "Agility": 0,
+        "Charisma": 0,
+        "Intelligence": 0,
+        "Willpower": 100,
+        "Strength": 0
+      }
+    },
+    "multifaceted": false,
+    "preMastery": {},
+    "postMastery": {},
+    "equipment": {
+      "Head": null,
+      "Arms": null,
+      "Legs": null,
+      "Torso": null,
+      "Face": null,
+      "Earrings": null,
+      "Rings": [
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    "weaponStars": {
+      "count": 0,
+      "mod": ""
+    }
+  }
