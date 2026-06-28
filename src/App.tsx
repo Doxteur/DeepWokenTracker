@@ -806,6 +806,7 @@ export default function App() {
       ) : (
         <HomeScreen
           builds={library}
+          shortcut={acceleratorToDisplay(settings.toggleShortcut)}
           onOpen={openBuild}
           onRename={renameOne}
           onDelete={deleteOne}

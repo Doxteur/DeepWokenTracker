@@ -26,7 +26,7 @@ Built with **Tauri 2** (Rust) + **React**, **TypeScript**, **Vite** and **Tailwi
 
 | Shortcut | Action |
 | --- | --- |
-| `Ctrl + Shift + D` | Show / hide the overlay (configurable in settings) |
+| `Ctrl + E` | Show / hide the overlay (configurable in settings) |
 
 ## Getting started
 

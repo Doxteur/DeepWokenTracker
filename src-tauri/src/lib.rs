@@ -359,7 +359,7 @@ pub fn run() {
             ])
             .setup(move |app| {
                 // Raccourci d'affichage par défaut (l'UI le ré-appliquera selon les réglages).
-                let _ = set_toggle_shortcut(app.handle().clone(), "Control+Shift+D".to_string());
+                let _ = set_toggle_shortcut(app.handle().clone(), "Control+E".to_string());
 
                 // Étend l'overlay sur tout le moniteur principal.
                 if let Some(win) = app.get_webview_window("main") {

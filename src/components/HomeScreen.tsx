@@ -120,12 +120,14 @@ function BuildCard({
 
 export default function HomeScreen({
   builds,
+  shortcut,
   onOpen,
   onRename,
   onDelete,
   onNew,
 }: {
   builds: SavedBuild[];
+  shortcut: string;
   onOpen: (id: string) => void;
   onRename: (id: string, name: string) => void;
   onDelete: (id: string) => void;
@@ -145,6 +147,29 @@ export default function HomeScreen({
           >
             + New build
           </button>
+        </div>
+
+        <div className="mb-3 flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-[12px] text-neutral-400">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="shrink-0 text-amber-300"
+            width="15"
+            height="15"
+          >
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M8 16h8" />
+          </svg>
+          <span>
+            Show / hide the overlay with{" "}
+            <kbd className="rounded border border-white/15 bg-black/40 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-amber-200">
+              {shortcut}
+            </kbd>
+          </span>
         </div>
 
         <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-500">

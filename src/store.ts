@@ -36,7 +36,7 @@ export interface AppSettings {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  toggleShortcut: "Control+Shift+D",
+  toggleShortcut: "Control+E",
   panels: { left: true, center: true, right: true },
   opacity: 0.95,
   scale: 1,
