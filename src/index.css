@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+/* Palette Deepwoken : on remappe l'ancien accent "amber" vers des teals/verts.
+   Les nuances claires (200/300) servent au texte sur fond sombre, les foncées
+   (400+) aux fonds/bordures/remplissages. */
+@theme {
+  --color-amber-200: #4cc2b8;
+  --color-amber-300: #1aa093;
+  --color-amber-400: #007872;
+  --color-amber-500: #06513a;
+  --color-amber-600: #014945;
+  --color-amber-700: #013835;
+  --color-amber-800: #012624;
+}
+
 html,
 body,
 #root {
@@ -23,9 +36,9 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(180, 150, 90, 0.35);
+  background: rgba(0, 120, 114, 0.4);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(180, 150, 90, 0.6);
+  background: rgba(0, 120, 114, 0.65);
 }

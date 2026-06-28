@@ -95,6 +95,74 @@ export function statMapFromAllocation(alloc: Record<string, number>): StatMap {
   return map;
 }
 
+// Attunements : exemptés de la limite de -25 du Shrine of Order.
+const ATTUNEMENT_CODES: StatCode[] = ["ICE", "FLM", "LTN", "WND", "SDW", "MTL", "BLD"];
+const MAX_REDUCTION = 25;
+
+/**
+ * Applique le Shrine of Order : moyenne les stats investies (>0), avec la règle
+ * « une stat principale ne peut perdre plus de 25 points » (les attunements n'ont pas
+ * de limite). Les points en trop sont remboursés. Reproduit l'algorithme communautaire.
+ */
+export function shrineOfOrder(input: StatMap): StatMap {
+  const affected = STAT_CODES.filter((c) => c !== "TTL" && (input[c] ?? 0) > 0);
+  if (affected.length === 0) return emptyStatMap();
+
+  const pre: Record<string, number> = {};
+  let pointsStart = 0;
+  for (const c of affected) {
+    pre[c] = input[c];
+    pointsStart += input[c];
+  }
+
+  // Division initiale égale entre toutes les stats investies.
+  const stats: Record<string, number> = {};
+  for (const c of affected) stats[c] = pointsStart / affected.length;
+
+  const bottlenecked = new Set<string>();
+  let divideBy = affected.length;
+  let prev: Record<string, number> = { ...stats };
+
+  let loop = true;
+  let guard = 0;
+  while (loop && guard++ < 100) {
+    let bottleneckedPoints = 0;
+    loop = false;
+
+    for (const c of affected) {
+      if (ATTUNEMENT_CODES.includes(c) || bottlenecked.has(c)) continue;
+      if (pre[c] - stats[c] > MAX_REDUCTION) {
+        stats[c] = pre[c] - MAX_REDUCTION;
+        bottleneckedPoints += stats[c] - prev[c];
+        bottlenecked.add(c);
+        divideBy -= 1;
+      }
+    }
+
+    if (divideBy <= 0) break;
+
+    for (const c of affected) {
+      if (bottlenecked.has(c)) continue;
+      stats[c] = stats[c] - bottleneckedPoints / divideBy;
+      if (!ATTUNEMENT_CODES.includes(c) && pre[c] - stats[c] > MAX_REDUCTION) {
+        loop = true;
+      }
+    }
+    prev = { ...stats };
+  }
+
+  for (const c of affected) stats[c] = Math.floor(stats[c]);
+
+  // Remboursement des points perdus à l'arrondi.
+  let pointsAfter = 0;
+  for (const c of affected) pointsAfter += stats[c];
+  if (pointsStart - pointsAfter > affected.length) {
+    for (const c of affected) stats[c] += 1;
+  }
+
+  return statMapFromAllocation(stats);
+}
+
 export interface Atom {
   stats: StatCode[];
   value: number;

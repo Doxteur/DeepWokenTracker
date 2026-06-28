@@ -33,6 +33,7 @@ export interface DerivedBuild {
   current: StatMap; // points actuellement alloués (progression)
   targets: StatMap; // cible par stat pour ce build (max pré-shrine / final)
   relevantCodes: StatCode[]; // stats que ce build investit (target > 0)
+  usesShrine: boolean; // true si le build a un pré-shrine distinct du final
 }
 
 function itemFromName(name: string): PlanItem {
@@ -80,7 +81,15 @@ export function deriveBuild(build: DeepwokenBuild, track: TrackState): DerivedBu
 
   const relevantCodes = STAT_CODES.filter((c) => c !== "TTL" && targets[c] > 0);
 
+  // Le build utilise un Shrine of Order seulement si un pré-shrine est fourni
+  // et que sa répartition diffère réellement du build final.
+  const usesShrine =
+    build.preShrine != null &&
+    STAT_CODES.some(
+      (c) => c !== "TTL" && (statMaps.pre[c] ?? 0) !== (statMaps.build[c] ?? 0),
+    );
+
   const current = statMapFromAllocation(track.allocation);
 
-  return { planItems, planIds, acquired, statMaps, current, targets, relevantCodes };
+  return { planItems, planIds, acquired, statMaps, current, targets, relevantCodes, usesShrine };
 }

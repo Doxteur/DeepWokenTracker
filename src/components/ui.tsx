@@ -26,6 +26,32 @@ export function HideButton({ onClick }: { onClick: () => void }) {
   );
 }
 
+type PointerHandlers = {
+  onPointerDown: (e: React.PointerEvent) => void;
+  onPointerMove: (e: React.PointerEvent) => void;
+  onPointerUp: (e: React.PointerEvent) => void;
+};
+
+export function ResizeHandle({ handlers }: { handlers: PointerHandlers }) {
+  return (
+    <div
+      data-no-drag
+      {...handlers}
+      className="group absolute bottom-0 right-0 z-10 h-5 w-5 cursor-nwse-resize"
+      title="Resize"
+    >
+      <svg
+        viewBox="0 0 10 10"
+        className="absolute bottom-1 right-1 text-neutral-600 transition group-hover:text-neutral-300"
+        width="10"
+        height="10"
+      >
+        <path d="M9 1 1 9M9 5 5 9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      </svg>
+    </div>
+  );
+}
+
 const CORE: StatCode[] = ["STR", "FTD", "AGL", "INT", "WLL", "CHA"];
 const WEAPON: StatCode[] = ["HVY", "MED", "LHT"];
 const ATTUNE: StatCode[] = ["FLM", "ICE", "LTN", "WND", "SDW", "MTL", "BLD"];

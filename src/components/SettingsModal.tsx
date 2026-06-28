@@ -1,36 +1,52 @@
 import { useEffect, useState } from "react";
-import { DEFAULT_SETTINGS } from "../store";
+import { invoke } from "@tauri-apps/api/core";
+import { DEFAULT_SETTINGS, type AppSettings } from "../store";
 import { acceleratorToDisplay, eventToAccelerator } from "../shortcut";
+
+type MonitorInfo = {
+  index: number;
+  name: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  primary: boolean;
+};
 
 export default function SettingsModal({
   open,
-  toggleShortcut,
+  settings,
   onClose,
-  onSave,
+  onApply,
 }: {
   open: boolean;
-  toggleShortcut: string;
+  settings: AppSettings;
   onClose: () => void;
-  onSave: (accelerator: string) => void;
+  onApply: (patch: Partial<AppSettings>) => void;
 }) {
-  const [value, setValue] = useState(toggleShortcut);
+  const [value, setValue] = useState(settings.toggleShortcut);
+  const [display, setDisplay] = useState(() => acceleratorToDisplay(settings.toggleShortcut));
   const [capturing, setCapturing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [monitors, setMonitors] = useState<MonitorInfo[]>([]);
 
   useEffect(() => {
     if (open) {
-      setValue(toggleShortcut);
+      setValue(settings.toggleShortcut);
+      setDisplay(acceleratorToDisplay(settings.toggleShortcut));
       setCapturing(false);
       setError(null);
+      invoke<MonitorInfo[]>("list_monitors")
+        .then(setMonitors)
+        .catch(() => setMonitors([]));
     }
-  }, [open, toggleShortcut]);
+  }, [open, settings.toggleShortcut]);
 
   useEffect(() => {
     if (!capturing) return;
     function onKeyDown(e: KeyboardEvent) {
       e.preventDefault();
       e.stopPropagation();
-      // Ignore les touches purement modificatrices : on attend la touche finale.
       if (["Control", "Shift", "Alt", "Meta"].includes(e.key)) return;
       const res = eventToAccelerator(e);
       if (res.error) {
@@ -38,6 +54,13 @@ export default function SettingsModal({
         return;
       }
       setValue(res.accelerator!);
+      const mods = res.accelerator!.split("+").slice(0, -1);
+      const keyLabel = e.key.length === 1 ? e.key.toUpperCase() : null;
+      setDisplay(
+        keyLabel
+          ? [...mods.map((m) => (m === "Control" ? "Ctrl" : m === "Super" ? "Win" : m)), keyLabel].join(" + ")
+          : acceleratorToDisplay(res.accelerator!),
+      );
       setError(null);
       setCapturing(false);
     }
@@ -76,40 +99,112 @@ export default function SettingsModal({
                 : "border-white/10 bg-black/40 text-neutral-100 hover:border-white/30"
             }`}
           >
-            {capturing ? "Press a key combination..." : acceleratorToDisplay(value)}
+            {capturing ? "Press a key combination..." : display}
           </button>
           {error ? (
             <p className="text-[11px] text-rose-400">{error}</p>
           ) : (
             <p className="text-[11px] text-neutral-500">
-              Click then press a combination (e.g. Ctrl + Shift + D).
+              Click then press a key or combination (e.g. Ctrl + Shift + D, or just ²).
             </p>
           )}
         </div>
 
+        {/* Opacité des panneaux */}
+        <div className="mt-4 space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-[11px] font-medium uppercase tracking-wider text-neutral-400">
+              Panel opacity
+            </label>
+            <span className="text-[11px] tabular-nums text-neutral-500">
+              {Math.round(settings.opacity * 100)}%
+            </span>
+          </div>
+          <input
+            type="range"
+            min={0.3}
+            max={1}
+            step={0.05}
+            value={settings.opacity}
+            onChange={(e) => onApply({ opacity: Number(e.target.value) })}
+            className="w-full accent-amber-400"
+          />
+        </div>
+
+        {/* Échelle de l'UI */}
+        <div className="mt-3 space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-[11px] font-medium uppercase tracking-wider text-neutral-400">
+              UI scale
+            </label>
+            <span className="text-[11px] tabular-nums text-neutral-500">
+              {Math.round(settings.scale * 100)}%
+            </span>
+          </div>
+          <input
+            type="range"
+            min={0.7}
+            max={1.5}
+            step={0.05}
+            value={settings.scale}
+            onChange={(e) => onApply({ scale: Number(e.target.value) })}
+            className="w-full accent-amber-400"
+          />
+        </div>
+
+        {/* Choix du moniteur (capture OCR + overlay) */}
+        <div className="mt-4 space-y-1.5">
+          <label className="block text-[11px] font-medium uppercase tracking-wider text-neutral-400">
+            Display / monitor
+          </label>
+          <select
+            value={settings.monitorIndex ?? ""}
+            onChange={(e) =>
+              onApply({ monitorIndex: e.target.value === "" ? null : Number(e.target.value) })
+            }
+            className="w-full rounded-md border border-white/10 bg-black/40 px-2 py-1.5 text-[12px] text-neutral-100 outline-none focus:border-white/30"
+          >
+            <option value="">Primary (auto)</option>
+            {monitors.map((m) => (
+              <option key={m.index} value={m.index}>
+                #{m.index + 1} · {m.width}×{m.height}
+                {m.primary ? " · primary" : ""}
+                {m.name ? ` · ${m.name}` : ""}
+              </option>
+            ))}
+          </select>
+          <p className="text-[11px] text-neutral-500">
+            The overlay moves to this screen so scan markers line up with the game.
+          </p>
+        </div>
+
         <div className="mt-4 flex items-center justify-between gap-2">
           <button
-            onClick={() => {
-              setValue(DEFAULT_SETTINGS.toggleShortcut);
-              setCapturing(false);
-              setError(null);
-            }}
+            onClick={() =>
+              onApply({
+                opacity: DEFAULT_SETTINGS.opacity,
+                scale: DEFAULT_SETTINGS.scale,
+              })
+            }
             className="rounded-md px-3 py-1.5 text-[12px] text-neutral-400 hover:bg-white/5 hover:text-neutral-200"
           >
-            Reset to default
+            Reset display
           </button>
           <div className="flex gap-2">
             <button
               onClick={onClose}
               className="rounded-md px-3 py-1.5 text-[12px] text-neutral-400 hover:bg-white/5"
             >
-              Cancel
+              Close
             </button>
             <button
-              onClick={() => onSave(value)}
+              onClick={() => {
+                onApply({ toggleShortcut: value });
+                onClose();
+              }}
               className="rounded-md bg-neutral-200 px-3 py-1.5 text-[12px] font-semibold text-neutral-900 hover:bg-white"
             >
-              Save
+              Save hotkey
             </button>
           </div>
         </div>

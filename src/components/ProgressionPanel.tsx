@@ -29,6 +29,8 @@ function Row({
       <div className="flex-1 truncate text-[13px] text-neutral-200">{STAT_LABELS[code]}</div>
       <div className="flex items-center gap-1">
         <button
+          type="button"
+          tabIndex={-1}
           onClick={() => onSet(code, clamp(current - STEP, target))}
           disabled={current <= 0}
           className="grid h-6 w-6 place-items-center rounded border border-white/10 bg-white/5 text-[13px] text-neutral-300 hover:bg-white/15 disabled:opacity-30"
@@ -38,12 +40,15 @@ function Row({
         <input
           value={current}
           onChange={(e) => onSet(code, clamp(parseInt(e.target.value, 10), target))}
+          onFocus={(e) => e.target.select()}
           inputMode="numeric"
           className={`w-11 rounded border border-white/10 bg-black/40 px-1 py-0.5 text-center text-[13px] font-bold tabular-nums outline-none focus:border-white/30 ${
             done ? "text-emerald-300" : "text-white"
           }`}
         />
         <button
+          type="button"
+          tabIndex={-1}
           onClick={() => onSet(code, clamp(current + STEP, target))}
           disabled={done}
           className="grid h-6 w-6 place-items-center rounded border border-white/10 bg-white/5 text-[13px] text-neutral-300 hover:bg-white/15 disabled:opacity-30"
@@ -92,6 +97,10 @@ export default function ProgressionPanel({
   onFill,
   onReset,
   onHide,
+  phase,
+  usesShrine,
+  onShrine,
+  onBackToPre,
 }: {
   relevantCodes: StatCode[];
   current: StatMap;
@@ -100,6 +109,10 @@ export default function ProgressionPanel({
   onFill: () => void;
   onReset: () => void;
   onHide: () => void;
+  phase: "pre" | "final";
+  usesShrine: boolean;
+  onShrine: () => void;
+  onBackToPre: () => void;
 }) {
   const relevant = new Set(relevantCodes);
   const core = CORE.filter((c) => relevant.has(c));
@@ -113,9 +126,22 @@ export default function ProgressionPanel({
   return (
     <div className="flex max-h-full min-h-0 flex-col">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <h2 className="text-[12px] font-semibold uppercase tracking-[0.16em] text-neutral-300">
-          Progression
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-[12px] font-semibold uppercase tracking-[0.16em] text-neutral-300">
+            Progression
+          </h2>
+          {usesShrine && (
+            <span
+              className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+                phase === "pre"
+                  ? "border-sky-400/40 bg-sky-400/15 text-sky-200"
+                  : "border-amber-400/40 bg-amber-400/15 text-amber-200"
+              }`}
+            >
+              {phase === "pre" ? "Pre-shrine" : "Post-shrine"}
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-1">
           <button
             onClick={onFill}
@@ -168,6 +194,28 @@ export default function ProgressionPanel({
           </p>
         )}
       </div>
+
+      {usesShrine &&
+        (phase === "pre" ? (
+          <button
+            data-no-drag
+            onClick={onShrine}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-amber-400/40 bg-amber-400/15 px-3 py-2 text-[12px] font-semibold uppercase tracking-wider text-amber-200 transition hover:bg-amber-400/25"
+            title="Shrine of Order: switch to the final build and redistribute"
+          >
+            <span aria-hidden>⛩</span>
+            Shrine
+          </button>
+        ) : (
+          <button
+            data-no-drag
+            onClick={onBackToPre}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-[11px] font-medium text-neutral-300 transition hover:bg-white/10"
+            title="Go back to the pre-shrine part"
+          >
+            ↩ Back to pre-shrine
+          </button>
+        ))}
 
       <p className="mt-2 text-[10px] leading-snug text-neutral-500">
         Allocate your points based on your actual progress: the "available" talents on the right

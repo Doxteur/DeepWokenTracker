@@ -11,6 +11,8 @@
     "core:window:allow-set-focus",
     "core:window:allow-set-ignore-cursor-events",
     "core:event:default",
-    "opener:default"
+    "opener:default",
+    "updater:default",
+    "process:default"
   ]
 }

@@ -5,10 +5,19 @@ export interface TrackState {
   planAdded: string[]; // ids ajoutés au plan en plus de l'export
   planRemoved: string[]; // ids retirés du plan
   allocation: Record<string, number>; // points alloués par stat (code -> valeur) selon l'avancement
+  mantrasTaken: string[]; // noms des mantras obtenus en jeu
+  phase: "pre" | "final"; // phase de progression : avant ou après le shrine
 }
 
 export function emptyTrack(): TrackState {
-  return { acquired: [], planAdded: [], planRemoved: [], allocation: {} };
+  return {
+    acquired: [],
+    planAdded: [],
+    planRemoved: [],
+    allocation: {},
+    mantrasTaken: [],
+    phase: "pre",
+  };
 }
 
 const LIBRARY_KEY = "dwt:builds";
@@ -21,11 +30,17 @@ export type PanelKey = "left" | "center" | "right";
 export interface AppSettings {
   toggleShortcut: string; // accélérateur global pour afficher/masquer l'overlay
   panels: Record<PanelKey, boolean>; // visibilité de chaque fenêtre
+  opacity: number; // opacité du fond des panneaux (0.3 - 1)
+  scale: number; // échelle de l'UI des panneaux (0.7 - 1.5)
+  monitorIndex: number | null; // moniteur ciblé (null = principal / auto)
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
   toggleShortcut: "Control+Shift+D",
   panels: { left: true, center: true, right: true },
+  opacity: 0.95,
+  scale: 1,
+  monitorIndex: null,
 };
 
 export function loadSettings(): AppSettings {
@@ -52,6 +67,8 @@ const POSITIONS_KEY = "dwt:positions";
 export interface PanelPos {
   x: number;
   y: number;
+  w?: number; // largeur (px) si l'utilisateur a redimensionné
+  h?: number; // hauteur (px) si l'utilisateur a redimensionné
 }
 
 export function loadPositions(): Record<string, PanelPos> {
