@@ -103,7 +103,7 @@ export default function NextPanel({
   );
 
   const { preGaps, postGaps } = useMemo(() => {
-    const all = computeGaps(planItems, current, acquired);
+    const all = computeGaps(planItems, current, acquired, buildMap);
     const pre: TalentGap[] = [];
     const post: TalentGap[] = [];
     for (const g of all) {
@@ -112,7 +112,7 @@ export default function NextPanel({
       else post.push(g);
     }
     return { preGaps: pre, postGaps: post };
-  }, [planItems, current, acquired, preMap]);
+  }, [planItems, current, acquired, preMap, buildMap]);
 
   const applyStep = (step: PlanStep) => {
     for (const inc of step.increments) onApply(inc.code, inc.to);

@@ -38,6 +38,7 @@ export function computeGaps(
   planItems: PlanItem[],
   current: StatMap,
   acquired: Set<string>,
+  caps?: StatMap,
 ): TalentGap[] {
   const out: TalentGap[] = [];
 
@@ -50,10 +51,22 @@ export function computeGaps(
     let statMissing = 0;
 
     for (const clause of t.parsed.clauses) {
+      // Pour une clause en OU (ex: Light OU Medium OU Heavy), on privilégie
+      // l'alternative que le build vise vraiment (via les caps), sinon la moins
+      // chère selon l'allocation courante.
       let best: ClauseGap | null = null;
+      let bestSupported = false;
       for (const atom of clause) {
         const miss = Math.max(0, atom.value - sumOf(atom.stats, current));
-        if (!best || miss < best.missing) best = { stats: atom.stats, missing: miss };
+        const supported = caps ? sumOf(atom.stats, caps) >= atom.value : false;
+        if (
+          !best ||
+          (supported && !bestSupported) ||
+          (supported === bestSupported && miss < best.missing)
+        ) {
+          best = { stats: atom.stats, missing: miss };
+          bestSupported = supported;
+        }
       }
       if (best && best.missing > 0) {
         gaps.push(best);
