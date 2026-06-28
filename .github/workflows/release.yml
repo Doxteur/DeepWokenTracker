@@ -1,13 +1,37 @@
 name: Release
 
-# Publie une release signée (avec artefacts d'auto-update) à chaque tag "vX.Y.Z".
+# Release automatique : à chaque push sur main, si la version de
+# src-tauri/tauri.conf.json n'a pas encore de tag "vX.Y.Z", on build,
+# signe, crée le tag + la release (avec artefacts d'auto-update).
 on:
   push:
-    tags:
-      - "v*"
+    branches: [main]
+  workflow_dispatch: {}
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      should_release: ${{ steps.v.outputs.should_release }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: v
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" >/dev/null 2>&1; then
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+            echo "Tag v$VERSION already exists -> skip."
+          else
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+            echo "New version v$VERSION -> release."
+          fi
+
   release:
+    needs: check
+    if: needs.check.outputs.should_release == 'true'
     permissions:
       contents: write
     runs-on: windows-latest
@@ -34,8 +58,8 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: "DeepWoken Tracker ${{ github.ref_name }}"
+          tagName: v${{ needs.check.outputs.version }}
+          releaseName: "DeepWoken Tracker v${{ needs.check.outputs.version }}"
           releaseBody: "Download the installer below. Existing installs update automatically."
           releaseDraft: false
           prerelease: false
